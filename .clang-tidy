@@ -1,0 +1,51 @@
+---
+# Luna clang-tidy configuration
+# Enables a curated set of checks relevant to a performance-sensitive C++20 codebase.
+# Each enabled group is justified in a comment.
+
+Checks: >
+  -*,
+  clang-diagnostic-*,
+  clang-analyzer-*,
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  modernize-*,
+  -modernize-use-trailing-return-type,
+  performance-*,
+  readability-*,
+  -readability-magic-numbers,
+  -readability-named-parameter,
+  cppcoreguidelines-*,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  -cppcoreguidelines-pro-type-reinterpret-cast,
+  misc-*,
+  -misc-non-private-member-variables-in-classes
+
+# Treat the following as errors (blocks CI):
+WarningsAsErrors: >
+  bugprone-use-after-move,
+  bugprone-dangling-handle,
+  bugprone-integer-division,
+  clang-analyzer-core.NullDereference,
+  clang-analyzer-cplusplus.NewDelete,
+  modernize-use-override,
+  performance-move-const-arg,
+  performance-unnecessary-copy-initialization
+
+HeaderFilterRegex: '.*luna/.*'
+
+CheckOptions:
+  - { key: readability-identifier-naming.NamespaceCase,       value: lower_case }
+  - { key: readability-identifier-naming.ClassCase,           value: CamelCase  }
+  - { key: readability-identifier-naming.StructCase,          value: CamelCase  }
+  - { key: readability-identifier-naming.EnumCase,            value: CamelCase  }
+  - { key: readability-identifier-naming.EnumConstantCase,    value: UPPER_CASE }
+  - { key: readability-identifier-naming.FunctionCase,        value: lower_case }
+  - { key: readability-identifier-naming.MemberCase,          value: lower_case }
+  - { key: readability-identifier-naming.VariableCase,        value: lower_case }
+  - { key: readability-identifier-naming.ParameterCase,       value: lower_case }
+  - { key: readability-identifier-naming.ConstantCase,        value: UPPER_CASE }
+  - { key: readability-identifier-naming.GlobalConstantCase,  value: UPPER_CASE }
+  - { key: performance-for-range-copy.WarnOnAllAutoCopies,    value: true        }
+  - { key: modernize-use-default-member-init.UseAssignment,   value: true        }

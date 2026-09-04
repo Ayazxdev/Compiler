@@ -1,0 +1,79 @@
+# Luna clang-format configuration
+# Based on LLVM style with minor adjustments for readability.
+---
+Language: Cpp
+BasedOnStyle: LLVM
+
+# Indentation
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ContinuationIndentWidth: 4
+NamespaceIndentation: None
+
+# Line length
+ColumnLimit: 100
+
+# Braces
+BreakBeforeBraces: Attach
+AllowShortBlocksOnASingleLine: Never
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+
+# Includes
+SortIncludes: CaseSensitive
+IncludeBlocks: Regroup
+IncludeCategories:
+  # Our own headers first
+  - Regex: '^"luna/'
+    Priority: 1
+  # Then standard library
+  - Regex: '^<[a-z_]+>'
+    Priority: 2
+  # Then everything else
+  - Regex: '.*'
+    Priority: 3
+
+# Spacing
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: false
+SpacesInAngles: Never
+SpacesInContainerLiterals: false
+SpaceAfterCStyleCast: false
+SpaceBeforeAssignmentOperators: true
+
+# Alignment
+AlignConsecutiveAssignments:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: false
+AlignConsecutiveDeclarations:
+  Enabled: false
+AlignTrailingComments:
+  Kind: Always
+  OverEmptyLines: 1
+
+# Pointers and references
+PointerAlignment: Left
+ReferenceAlignment: Left
+
+# Constructor initializers
+BreakConstructorInitializers: BeforeComma
+PackConstructorInitializers: Never
+
+# Template formatting
+AlwaysBreakTemplateDeclarations: Yes
+
+# Comments
+ReflowComments: true
+CommentPragmas: '^ IWYU pragma:'
+
+# Penalties (tune line-break decisions)
+PenaltyBreakComment: 300
+PenaltyBreakString: 1000
+PenaltyReturnTypeOnItsOwnLine: 200
+
+# C++20
+Standard: c++20
