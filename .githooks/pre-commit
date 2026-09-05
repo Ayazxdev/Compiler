@@ -1,0 +1,57 @@
+#!/usr/bin/env sh
+# Luna pre-commit hook
+# Checks that staged C++ files pass clang-format and (optionally) clang-tidy.
+# Install:
+#   cp .githooks/pre-commit .git/hooks/pre-commit
+#   chmod +x .git/hooks/pre-commit
+#
+# Or use `git config core.hooksPath .githooks` to point git at this directory.
+set -e
+
+CLANG_FORMAT=${CLANG_FORMAT:-clang-format}
+CLANG_TIDY=${CLANG_TIDY:-clang-tidy}
+
+FORMAT_FAILED=0
+TIDY_FAILED=0
+
+# Collect staged C++ files
+STAGED=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(cpp|cxx|cc|h|hpp|hxx)$' || true)
+
+if [ -z "$STAGED" ]; then
+  exit 0
+fi
+
+echo "clang-format check"
+for FILE in $STAGED; do
+  if ! $CLANG_FORMAT --dry-run --Werror "$FILE" 2>/dev/null; then
+    echo "  FAIL (format): $FILE"
+    FORMAT_FAILED=1
+  fi
+done
+
+if [ $FORMAT_FAILED -eq 1 ]; then
+  echo ""
+  echo "Fix with:  clang-format -i <file>"
+  echo "  Or:      clang-format -i \$(git diff --cached --name-only | grep -E '\\.(cpp|h)$')"
+  exit 1
+fi
+
+echo "  OK — all staged files are correctly formatted."
+
+# clang-tidy is optional in the hook (requires compile_commands.json from
+# recent cmake configure run).  Skips gracefully if not available.
+if command -v "$CLANG_TIDY" > /dev/null 2>&1 && [ -f "build/debug/compile_commands.json" ]; then
+  echo "clang-tidy check"
+  for FILE in $STAGED; do
+    if ! $CLANG_TIDY -p build/debug "$FILE" -- 2>/dev/null; then
+      echo "  FAIL (tidy): $FILE"
+      TIDY_FAILED=1
+    fi
+  done
+  if [ $TIDY_FAILED -eq 1 ]; then
+    exit 1
+  fi
+  echo "  OK — all staged files pass clang-tidy."
+fi
+
+exit 0
