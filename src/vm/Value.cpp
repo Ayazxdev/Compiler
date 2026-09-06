@@ -16,7 +16,7 @@ std::string format_double(double d, bool is_concat) {
     // If whole integer
     if (std::floor(d) == d && std::abs(d) < 1e15) {
         if (is_concat) {
-            // Python string representation for float whole number is "1.0"
+            // Luna string representation for float whole number during concatenation is "1.0"
             return std::format("{:.1f}", d);
         }
         return std::to_string(static_cast<long long>(d));
